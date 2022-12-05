@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_curd/provider/todo_provider.dart';
+import 'package:sqflite_curd/screens/add_todo_screen.dart';
 
 class ShowTodoScreen extends StatelessWidget {
   const ShowTodoScreen({super.key});
@@ -8,6 +9,20 @@ class ShowTodoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Provider.of<TodoProvider>(context, listen: false)
+          //     .intentScreen(context, const AddTodoScreen());
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return const AddTodoScreen();
+              },
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
       appBar: AppBar(
         title: const Text('Todo'),
       ),
@@ -21,7 +36,15 @@ class ShowTodoScreen extends StatelessWidget {
                     ? ListView.builder(
                         itemCount: todoProvider.todoItem.length,
                         itemBuilder: (context, index) {
-                          return const ListTile();
+                          return Card(
+                            elevation: 8,
+                            child: ListTile(
+                              title: Text(todoProvider.todoItem[index].title),
+                              subtitle: Text(
+                                  todoProvider.todoItem[index].description),
+                              trailing: Text(todoProvider.todoItem[index].date),
+                            ),
+                          );
                         },
                       )
                     : const Center(
