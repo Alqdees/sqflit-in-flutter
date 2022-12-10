@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_curd/provider/todo_provider.dart';
 import 'package:sqflite_curd/screens/add_todo_screen.dart';
+import 'package:sqflite_curd/screens/edit_todo.dart';
 
 class ShowTodoScreen extends StatelessWidget {
   const ShowTodoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -36,13 +39,52 @@ class ShowTodoScreen extends StatelessWidget {
                     ? ListView.builder(
                         itemCount: todoProvider.todoItem.length,
                         itemBuilder: (context, index) {
-                          return Card(
-                            elevation: 8,
-                            child: ListTile(
-                              title: Text(todoProvider.todoItem[index].title),
-                              subtitle: Text(
-                                  todoProvider.todoItem[index].description),
-                              trailing: Text(todoProvider.todoItem[index].date),
+                          return Dismissible(
+                            key: ValueKey(todoProvider.todoItem[index].id),
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              margin: EdgeInsets.all(width * 0.01),
+                              padding: EdgeInsets.all(width * 0.03),
+                              // decoration: BoxDecoration(
+                              //   color: Colors.green,
+                              //   borderRadius:
+                              //       BorderRadius.circular(width * 0.03),
+                              // ),
+                              color: Colors.green,
+                              height: height * 0.02,
+                              width: width,
+                              child: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
+                            ),
+                            confirmDismiss: (DismissDirection direction) async {
+                              if (direction == DismissDirection.endToStart) {
+                                return await Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return  EditTodoScreen(
+                                    id: todoProvider.todoItem[index].id,
+                                    title: todoProvider.todoItem[index].title,
+                                    discription: todoProvider.todoItem[index].description,
+                                    date: todoProvider.todoItem[index].date,
+                                  );
+                                }));
+                              }
+                              // else if(direction == DismissDirection.startToEnd){
+                              //   re
+                              // }
+                            },
+                            child: Card(
+                              elevation: 8,
+                              child: ListTile(
+                                title: Text(todoProvider.todoItem[index].title),
+                                subtitle: Text(
+                                    todoProvider.todoItem[index].description),
+                                    
+                                trailing:
+                                    Text(todoProvider.todoItem[index].date),
+                                    
+                              ),
                             ),
                           );
                         },

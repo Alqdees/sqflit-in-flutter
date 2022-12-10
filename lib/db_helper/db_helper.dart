@@ -30,4 +30,19 @@ class DBHelper {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+  
+  // Future<int> update(String id, String name, String family, String birthday,
+  //     String mobile, String nationalId) async {
+  //   var dbClient = await DBHelper.database();
+  //   return await dbClient?.rawUpdate(
+  //       'UPDATE $todo SET title = \'$name\', $FAMILY = \'$family\' ,$BIRTHDAY = \'$birthday\', $MOBILE = \'$mobile\' , $NATIONAL_ID = \'$nationalId\' WHERE $ID = ${int.parse(id)}');
+  // }
+
+  static Future upDate(
+      String table, Map<String, Object?> values, String? myWhere,String id) async {
+    Database? db = await DBHelper.database();
+    int response = await db!.update(table, values, where: myWhere,whereArgs: [id]);
+    // db.close();
+    return response;
+  }
 }

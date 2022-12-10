@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sqflite_curd/db_helper/db_helper.dart';
 import 'package:uuid/uuid.dart';
 
@@ -40,6 +40,34 @@ class TodoProvider extends ChangeNotifier {
         'date': newTodo.date,
       },
     );
+    notifyListeners();
+  }
+
+  void updateData(
+      TextEditingController title,
+      TextEditingController description,
+      TextEditingController date,
+      String id,
+      BuildContext context) async {
+    int response = await DBHelper.upDate(
+        DBHelper.todo,
+        {
+          "title": title.text,
+          "description": description.text,
+          "date": date.text,
+        },
+        "ID = $id}",
+        id);
+    if (response > 0) {
+      Fluttertoast.showToast(
+        msg: "تمت التحديث",
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.greenAccent,
+        fontSize: 22,
+        toastLength: Toast.LENGTH_SHORT,
+        textColor: Colors.black,
+      );
+    }
     notifyListeners();
   }
 }

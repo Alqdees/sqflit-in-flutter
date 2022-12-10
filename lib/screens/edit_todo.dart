@@ -1,18 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+
 import 'package:sqflite_curd/provider/todo_provider.dart';
 
-class AddTodoScreen extends StatefulWidget {
-  const AddTodoScreen({super.key});
+class EditTodoScreen extends StatefulWidget {
+  const EditTodoScreen({
+    Key? key,
+    required this.id,
+    required this.title,
+    required this.discription,
+    required this.date,
+  }) : super(key: key);
+  final String id, title, discription, date;
 
   @override
-  State<AddTodoScreen> createState() => _AddTodoScreenState();
+  State<EditTodoScreen> createState() => _EditTodoScreenState();
 }
 
-class _AddTodoScreenState extends State<AddTodoScreen> {
+class _EditTodoScreenState extends State<EditTodoScreen> {
   final TextEditingController _title = TextEditingController();
   final TextEditingController _description = TextEditingController();
   final TextEditingController _date = TextEditingController();
+
+  @override
+  void initState() {
+    _title.text = widget.title;
+    _description.text = widget.discription;
+    _date.text = widget.date;
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -24,10 +42,9 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final todoProvider = Provider.of<TodoProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add to do'),
+        title: const Text('Edit Screen'),
       ),
       body: Column(
         children: [
@@ -56,19 +73,11 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
             padding: const EdgeInsets.all(18),
             child: ElevatedButton(
               onPressed: () async {
-                await todoProvider.insertData(
-                  _title.text,
-                  _description.text,
-                  _date.text,
-                );
-                _title.clear();
-                _description.clear();
-                _date.clear();
-                // ignore: use_build_context_synchronously
-                Navigator.pop(context);
+                Provider.of<TodoProvider>(context, listen: false).updateData(
+                    _title, _description, _date, widget.id.toString(), context);
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
-              child: const Text('Add ToDo'),
+              child: const Text('Update ToDo'),
             ),
           ),
         ],
